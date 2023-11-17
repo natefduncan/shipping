@@ -134,7 +134,7 @@ def download_ups_maps(zip_codes: list[str], map_dir: str):
 
 @cli.command()
 @click.argument("from-zips", type=str)
-@click.option("-d", "--map-dir", type=str)
+@click.option("-d", "--map-dir", type=str, default=".")
 def ups_maps(from_zips, map_dir):
     from_zips = from_zips.split(",")
     download_ups_maps(from_zips, map_dir)

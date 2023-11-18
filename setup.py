@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def get_requirements():
@@ -9,12 +9,13 @@ def get_requirements():
 
 setup(
     name="shipping",
-    version="0.1.0",
+    version="0.1.1",
     py_modules=["shipping"],
+    packages=find_packages(),
     install_requires=get_requirements(),
     entry_points={
         "console_scripts": [
-            "shipping = main:cli",
+            "shipping = shipping.main:cli",
         ],
     },
 )

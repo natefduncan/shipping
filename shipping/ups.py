@@ -2,6 +2,7 @@ import datetime as dt
 import os
 import pandas as pd
 import requests as r
+import json
 
 from shipping.common import Rate, RateRequest
 from shipping.ups_ground import ups_ground_days
@@ -20,7 +21,21 @@ def get_token(client_id, client_secret):
     return data
 
 
-def get_rate(token: str, rate_request: RateRequest, map_dir: str, ignore_ground: bool) -> list[Rate]:
+def create_ups_token(client_id, client_secret):
+    token = get_token(client_id, client_secret)
+    with open(".ups_token", "w") as f:
+        f.write(json.dumps(token))
+
+
+def get_ups_token():
+    with open(".ups_token", "r") as f:
+        ups_token = json.loads(f.read())
+    return ups_token
+
+
+def get_rate(
+    token: str, rate_request: RateRequest, map_dir: str, ignore_ground: bool
+) -> list[Rate]:
     version = "v2205"
     requestoption = "shoptimeintransit"
     url = f"https://wwwcie.ups.com/api/rating/{version}/{requestoption}"
@@ -118,7 +133,9 @@ def parse_rate_response(
             if not ignore_ground:
                 if int(service) == 3:  # UPS Ground
                     days = ups_ground_days(
-                        rate_request.origination.zip_code, rate_request.destination.state, map_dir
+                        rate_request.origination.zip_code,
+                        rate_request.destination.state,
+                        map_dir,
                     )
                     arrival = dt.datetime.today() + dt.timedelta(days=int(days))
             output.append(Rate(price, service, arrival))

@@ -71,7 +71,9 @@ def color_to_days(color) -> int:
 
 def ups_ground_days(from_zip: str, to_state: str, map_dir: str):
     maps = pd.read_csv(f"{map_dir}/maps.csv").to_dict(orient="records")
-    from_file = next((i for i in maps if str(i["zip_code"]) == from_zip), None)["file_name"]
+    from_file = next((i for i in maps if str(i["zip_code"]) == from_zip), None)[
+        "file_name"
+    ]
     if from_file:
         img = Image.open(f"{map_dir}/{from_file}")
         cropped_img = crop_to_state(img, to_state)
